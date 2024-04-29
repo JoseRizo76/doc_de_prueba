@@ -24,11 +24,23 @@
         const auth = firebase.auth();
         const db = firebase.database();
     </script>
-    <title>prueba</title> 
+    <title>Prueba</title> 
+    <style>
+        #contenedor {
+          display: flex;
+          flex-wrap: wrap;
+        }
+      
+        .tarjeta {
+          border: 1px solid #ccc;
+          padding: 10px;
+          margin: 10px;
+          flex: 0 0 calc(20% - 20px); /* Para que cada tarjeta ocupe el 20% del contenedor */
+        }
+      </style>
 </head>
 <body>
-    <div>
-      <p id="sector" class="container"></p>
+    <div id="contenedor">
     </div>
     
     <script src="index.js" ></script>
