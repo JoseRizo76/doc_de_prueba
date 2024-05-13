@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crear tarjetas dinámicamente con contenido</title>
+<style>
+  #contenedor {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .tarjeta {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px;
+    flex: 0 0 calc(20% - 20px); /* Para que cada tarjeta ocupe el 20% del contenedor */
+  }
+</style>
+</head>
+<body>
+
+<div id="contenedor_principal">
+  <div id="contenedor"></div>
+</div>
+
+<script>
+var sectores = 5;
+
+var contenedor = document.getElementById("contenedor");
+
+for (var i = 1; i <= sectores; i++) {
+  var div = document.createElement("div");
+  div.className = "tarjeta";
+  div.id = "sector" + i;
+
+  var titulo = document.createElement("h2");
+  titulo.textContent = "Sector " + i;
+  div.appendChild(titulo);
+
+  var humedad = document.createElement("p");
+  humedad.textContent = "Humedad: " + obtenerHumedad(); // Aquí deberías poner tu lógica para obtener la humedad
+  div.appendChild(humedad);
+
+  var temperatura = document.createElement("p");
+  temperatura.textContent = "Temperatura: " + obtenerTemperatura(); // Aquí deberías poner tu lógica para obtener la temperatura
+  div.appendChild(temperatura);
+
+  var pH = document.createElement("p");
+  pH.textContent = "pH: " + obtenerPH(); // Aquí deberías poner tu lógica para obtener el pH
+  div.appendChild(pH);
+
+  // Puedes agregar más elementos aquí según sea necesario
+
+  contenedor.appendChild(div);
+}
+
+// Funciones de ejemplo para obtener datos simulados
+function obtenerHumedad() {
+  return (Math.random() * 100).toFixed(2) + "%";
+}
+
+function obtenerTemperatura() {
+  return (Math.random() * 50 + 20).toFixed(2) + "°C";
+}
+
+function obtenerPH() {
+  return (Math.random() * 14).toFixed(2);
+}
+</script>
+
+</body>
+</html>
