@@ -6,6 +6,8 @@ var Sectoresmax = null; // almacena la cantidad de sectores que tiene firebase
 // path de sectores activos
 var Sectores_activos = firebase.database().ref().child("/Sectores_Activos");
 var texto_Sector_apagado = "OFFLINE";
+var weatherq = firebase.database().ref().child("/API-WEATHER");
+var container = document.querySelector("#container");
 
 //EXTRAE
 Sectores_activos.on("value", (snap) => {
@@ -18,6 +20,7 @@ Sectores_activos.on("value", (snap) => {
   });
 });
 
+
 function actualizar_datos() {
   for (var k = 0; k < Sectoresmax; k++) {
     path[k].on("value", (snap) => {
@@ -26,23 +29,50 @@ function actualizar_datos() {
       });
     });
   }
+
+  weatherq.on("value", (snap) => {
+    var datotemp = snap.val();
+    cargar_datos_weather(datotemp);
+  });
+}
+
+function cargar_datos_weather(datosW) {
+  var id_weather = [];
+  id_weather[0] = document.querySelector("#humedad_weather");
+  id_weather[1] = document.querySelector("#temperatura_weather");
+  id_weather[2] = document.querySelector("#velocidad_viento_weather");
+  id_weather[3] = document.querySelector("#presion_weather")
+  id_weather[4] = document.querySelector("#p_rocio_weather");
+  id_weather[5] = document.querySelector("#ubicacion");
+
+  id_weather[0].innerText = "Humedad: " + datosW[0] + " %";
+  id_weather[1].innerText = "Temperatura: " + datosW[1]+ " °C";
+  id_weather[2].innerText = "Velocidad del Viento: " + datosW[2] + " m/s";
+  id_weather[3].innerText = "Presion: " + datosW[3] + " hPa";
+  id_weather[4].innerText = "Punto de Rocio: " + datosW[4] + "°C";
+  id_weather[5].innerText = "Ubicacion: " + datosW[5];
+  container.style.display = "flex";
 }
 
 function cargar_datos() {
   for (var i = 0; i < Sectoresmax; i++) {
+    var titulo = document.querySelector("#N_sector" + (i + 1));
     var id_SectorS = document.querySelector("#Sector" + (i + 1));
     var id_humedad = document.querySelector("#humedad" + (i + 1));
     var id_temperatura = document.querySelector("#temperatura" + (i + 1));
     var id_pH = document.querySelector("#pH" + (i + 1));
     var id_estado_riego = document.querySelector("#estado_riego" + (i + 1));
     var apagar_sector_id = document.querySelector("#estado_sector" + (i + 1));
+    var planta_id = document.querySelector("#t_planta"+ (i+1));
 
     if (!sector[i].estado_sector) {
       id_SectorS.style.display = "none";
       apagar_sector_id.style.display = "block";
+      titulo.style.color = "red";
     } else {
       id_SectorS.style.display = "block";
       apagar_sector_id.style.display = "none";
+      titulo.style.color = "black";
       if (id_humedad && id_temperatura && id_pH) {
         id_humedad.innerText = "Humedad: " + sector[i].humedad;
         id_temperatura.innerText = "Temperatura: " + sector[i].temperatura;
@@ -52,6 +82,7 @@ function cargar_datos() {
         } else {
           id_estado_riego.innerText = "Riego Encendido";
         }
+        planta_id.innerText =((sector[i].t_plantaF)==1)? "Tomate":"Cebolla";
       } else {
         alert("Problemas con la pagina web");
       }
@@ -72,6 +103,7 @@ function crearSectores(numSectores) {
       pH: 0,
       estado_riego: null,
       estado_sector: null,
+      t_plantaF: null,
     };
     sector.push(sectorNuevo);
   }
@@ -89,7 +121,12 @@ function imprimirSectores() {
     var titulo = document.createElement("h2");
     titulo.textContent = "Sector " + i;
     titulo.className = "N_sector";
+    titulo.id = "N_sector" + i;
     div.appendChild(titulo);
+    
+    var div3 = document.createElement("div");
+    div3.id = "t_planta"+ i;
+    div.appendChild(div3);
 
     var div2 = document.createElement("div");
     div2.id = "Sector" + i;
@@ -113,9 +150,9 @@ function imprimirSectores() {
 
     var estado_sector_div = document.createElement("div");
     estado_sector_div.id = "estado_sector" + i;
+    estado_sector_div.className = "sector_offline";
     estado_sector_div.textContent = texto_Sector_apagado;
     div.appendChild(estado_sector_div);
-
     contenedor.appendChild(div);
   }
 }
@@ -142,6 +179,7 @@ function actualizar() {
             sector[j].humedad = datos[j][2];
             sector[j].pH = datos[j][3];
             sector[j].estado_riego = datos[j][4];
+            sector[j].t_plantaF = datos[j][5];
             resolve();
           });
         })
