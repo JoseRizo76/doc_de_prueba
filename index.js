@@ -74,15 +74,20 @@ function cargar_datos() {
       apagar_sector_id.style.display = "none";
       titulo.style.color = "black";
       if (id_humedad && id_temperatura && id_pH) {
-        id_humedad.innerText = "Humedad: " + sector[i].humedad;
-        id_temperatura.innerText = "Temperatura: " + sector[i].temperatura;
+        id_humedad.innerHTML = '<i class="fa-solid fa-droplet"></i> Humedad: ' + sector[i].humedad.toFixed(1) +' %';
+        id_temperatura.innerHTML = '<i class="fa-solid fa-temperature-three-quarters"></i> Temperatura: ' + sector[i].temperatura.toFixed(1)+' °C';
         id_pH.innerText = "pH: " + sector[i].pH;
         if (sector[i].estado_riego == false) {
-          id_estado_riego.innerText = "Riego apagado";
+          id_estado_riego.innerHTML = 'Riego apagado </i> <i class="fa-solid fa-toggle-off"></i>'; //<i class="fa-solid fa-toggle-on"></i> <i class="fa-solid fa-toggle-off"></i>
         } else {
-          id_estado_riego.innerText = "Riego Encendido";
+          id_estado_riego.innerHTML = 'Riego Encendido <i class="fa-solid fa-toggle-on"></i>';
         }
-        planta_id.innerText =((sector[i].t_plantaF)==1)? "Tomate":"Cebolla";
+        switch (sector[i].t_plantaF){
+          case 1 : planta_id.innerText = "Tomate"; break;
+          case 2 : planta_id.innerText = "Cebolla"; break;
+          case 3 : planta_id.innerText = "Repollo"; break;
+          default: planta_id.innerText = "No declarado";
+        }
       } else {
         alert("Problemas con la pagina web");
       }
