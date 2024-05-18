@@ -63,6 +63,7 @@ function cargar_datos() {
     var id_pH = document.querySelector("#pH" + (i + 1));
     var id_estado_riego = document.querySelector("#estado_riego" + (i + 1));
     var apagar_sector_id = document.querySelector("#estado_sector" + (i + 1));
+    var planta_id = document.querySelector("#t_planta"+ (i+1));
 
     if (!sector[i].estado_sector) {
       id_SectorS.style.display = "none";
@@ -73,13 +74,19 @@ function cargar_datos() {
       apagar_sector_id.style.display = "none";
       titulo.style.color = "black";
       if (id_humedad && id_temperatura && id_pH) {
-        id_humedad.innerText = "Humedad: " + sector[i].humedad;
-        id_temperatura.innerText = "Temperatura: " + sector[i].temperatura;
+        id_humedad.innerHTML = '<i class="fa-solid fa-droplet"></i> Humedad: ' + sector[i].humedad.toFixed(1) +' %';
+        id_temperatura.innerHTML = '<i class="fa-solid fa-temperature-three-quarters"></i> Temperatura: ' + sector[i].temperatura.toFixed(1)+' °C';
         id_pH.innerText = "pH: " + sector[i].pH;
         if (sector[i].estado_riego == false) {
-          id_estado_riego.innerText = "Riego apagado";
+          id_estado_riego.innerHTML = 'Riego apagado </i> <i class="fa-solid fa-toggle-off"></i>'; //<i class="fa-solid fa-toggle-on"></i> <i class="fa-solid fa-toggle-off"></i>
         } else {
-          id_estado_riego.innerText = "Riego Encendido";
+          id_estado_riego.innerHTML = 'Riego Encendido <i class="fa-solid fa-toggle-on"></i>';
+        }
+        switch (sector[i].t_plantaF){
+          case 1 : planta_id.innerText = "Tomate"; break;
+          case 2 : planta_id.innerText = "Cebolla"; break;
+          case 3 : planta_id.innerText = "Repollo"; break;
+          default: planta_id.innerText = "No declarado";
         }
       } else {
         alert("Problemas con la pagina web");
@@ -101,6 +108,7 @@ function crearSectores(numSectores) {
       pH: 0,
       estado_riego: null,
       estado_sector: null,
+      t_plantaF: null,
     };
     sector.push(sectorNuevo);
   }
@@ -120,6 +128,10 @@ function imprimirSectores() {
     titulo.className = "N_sector";
     titulo.id = "N_sector" + i;
     div.appendChild(titulo);
+    
+    var div3 = document.createElement("div");
+    div3.id = "t_planta"+ i;
+    div.appendChild(div3);
 
     var div2 = document.createElement("div");
     div2.id = "Sector" + i;
@@ -146,7 +158,6 @@ function imprimirSectores() {
     estado_sector_div.className = "sector_offline";
     estado_sector_div.textContent = texto_Sector_apagado;
     div.appendChild(estado_sector_div);
-
     contenedor.appendChild(div);
   }
 }
@@ -173,6 +184,7 @@ function actualizar() {
             sector[j].humedad = datos[j][2];
             sector[j].pH = datos[j][3];
             sector[j].estado_riego = datos[j][4];
+            sector[j].t_plantaF = datos[j][5];
             resolve();
           });
         })
